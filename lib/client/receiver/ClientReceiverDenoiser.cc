@@ -10,13 +10,13 @@
 
 #include <scene_rdl2/common/grid_util/Fb.h>
 
+#include <thread>
 // Basically we should use multi-thread version.
 // This single thread mode is used debugging and performance comparison reason mainly.
 //#define SINGLE_THREAD
 
 #ifndef SINGLE_THREAD
 #include <tbb/parallel_for.h>
-#include <thread>
 #endif // end SINGLE_THREAD
 
 // denoiseActionInterval logic debug messages
