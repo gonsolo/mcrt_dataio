@@ -101,14 +101,24 @@ LayoutCorePerf::drawMcrtComputation(const DisplayInfo& info)
     int id = 0;
     gNodeInfo->crawlAllMcrtNodeInfo([&](std::shared_ptr<McrtNodeInfo> node) {
             McrtPos& currMcrtPos = mMcrtPosArray[id];
-            
+
             currMcrtPos.mCoreWinXMin = leftX + (titleWidthChar + 1) * fontStepX;
             currMcrtPos.mCoreWinXMax = leftX + mcrtWidth - gapX - 1;
             currMcrtPos.mCoreWinYMax = currMcrtPos.mMaxY + currMcrtPos.mYStep;
             currMcrtPos.mCoreWinYMin = currMcrtPos.mCoreWinYMax - currMcrtPos.mYStep * currMcrtPos.mNumOfRows;
+
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc++11-narrowing"
+#endif
+        // FIXME: non-constant-expression cannot be narrowed from type 'unsigned int' to 'int' in initializer list. Worked around it by disabling diagnostic
+        // Vec2i , coords unsigned.
             mBBoxMcrtComputation.
                 extend({scene_rdl2::math::Vec2i{currMcrtPos.mCoreWinXMin, currMcrtPos.mCoreWinYMin},
                         scene_rdl2::math::Vec2i{currMcrtPos.mCoreWinXMax + gapX, currMcrtPos.mCoreWinYMax}});
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
             currMcrtPos.mSingleCoreGapX = 6;
             unsigned coreWinWidth = currMcrtPos.mCoreWinXMax - currMcrtPos.mCoreWinXMin + 1;

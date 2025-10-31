@@ -220,8 +220,19 @@ LayoutPanel::subPanelNetIOCpuMemAndProgress(unsigned leftBottomX,
                               graphTopY,
                               "NetRcv");
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc++11-narrowing"
+#endif
+
+    // FIXME: non-constant-expression cannot be narrowed from type 'unsigned int' to 'int' in initializer list ( Bbox is an int , coords are unsigned ). Worked around it by disabling diagnostic
+
     bbox = Overlay::BBox2i(scene_rdl2::math::Vec2i {leftBottomX, leftBottomY},
                            scene_rdl2::math::Vec2i {rightTopX, rightTopY});
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+
 
     C3 cNonActive {96,96,96};
     mOverlay->drawBox(bbox, ((activeBgColFlag) ? mPanelBg : cNonActive), mPanelBgAlpha);
